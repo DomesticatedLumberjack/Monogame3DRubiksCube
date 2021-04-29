@@ -8,7 +8,7 @@ namespace RubixSolver
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        VertexPositionNormalTexture[] cube;
+        Cube cube;
 
         //Camera
         //Renderer
@@ -21,7 +21,9 @@ namespace RubixSolver
         //Objects
         Renderer ren;
 
-        float angle;
+        float angleX;
+        float angleY;
+        bool orbit;
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -48,28 +50,42 @@ namespace RubixSolver
             ren.BasicEffect.View = V;
 
             ren.VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
-            ren.BasicEffect.AmbientLightColor = new Vector3(0.0f, 0.0f, 0.0f);
+            ren.BasicEffect.AmbientLightColor = new Vector3(0.8f, 0.8f, 0.8f);
 
             //Orbit
-            angle = 0;
+            angleX = 0;
+            angleY = 0;
+
+            cube = new Cube();
+            orbit = false;
         }
         protected override void LoadContent()
         {
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            Cube cubeMaker = new Cube();
-            cube = cubeMaker.MakeCube();
-        }
-        protected override void UnloadContent()
-        {
         }
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
             
-            angle = angle + 0.05f;
-            if (angle > 2 * MathHelper.Pi) angle = 0;
-            Matrix R = Matrix.CreateRotationY(angle) * Matrix.CreateRotationX(.4f);
+            if(Keyboard.GetState().IsKeyDown(Keys.Right))
+                angleY -= 0.05f;
+            if(Keyboard.GetState().IsKeyDown(Keys.Left))
+                angleY += 0.05f;
+            if(Keyboard.GetState().IsKeyDown(Keys.Up))
+                angleX -= 0.05f;
+            if(Keyboard.GetState().IsKeyDown(Keys.Down))
+                angleX += 0.05f;
+
+            if(Keyboard.GetState().IsKeyDown(Keys.Space))
+                orbit = !orbit;
+            
+            if(orbit)
+                angleY += 0.005f;
+            
+            if (angleY > 2 * MathHelper.Pi) angleY = 0;
+            if (angleX > 2 * MathHelper.Pi) angleX = 0;
+            Matrix R = Matrix.CreateRotationY(angleY) * Matrix.CreateRotationX(0.4f + angleX);
             Matrix T = Matrix.CreateTranslation(0.0f, 0f, 5f);
             ren.BasicEffect.World = R * T;
             base.Update(gameTime);
@@ -79,12 +95,13 @@ namespace RubixSolver
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             RasterizerState rasterizerState = new RasterizerState();
+            rasterizerState.CullMode = CullMode.CullClockwiseFace;
             GraphicsDevice.RasterizerState = rasterizerState;
 
             foreach(EffectPass pass in ren.BasicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                graphics.GraphicsDevice.DrawUserPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, cube, 0, 12);
+                graphics.GraphicsDevice.DrawUserPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, cube.vertexPositions, 0, 12);
             }
 
             base.Draw(gameTime);

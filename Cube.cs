@@ -3,7 +3,8 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RubixSolver{
     class Cube{
-        public VertexPositionNormalTexture[] MakeCube()
+        public VertexPositionNormalTexture[] vertexPositions {get; set;}
+        public Cube()
         {
             VertexPositionNormalTexture[] vertexes = new VertexPositionNormalTexture[36];
             Vector2 Texcoords = new Vector2(0f, 0f);
@@ -37,19 +38,20 @@ namespace RubixSolver{
             }
             //left face
             Matrix RotY90 = Matrix.CreateRotationY(-MathHelper.Pi / 2f);
+            Matrix RotX90 = Matrix.CreateRotationX(-MathHelper.Pi / 2f);
             for (int i = 0; i <= 2; i++)
             {
-                vertexes[i + 12] = new VertexPositionNormalTexture(Vector3.Transform(face[i], RotY90) - Vector3.UnitX, -Vector3.UnitX, Texcoords);
-                vertexes[i + 12 + 3] = new VertexPositionNormalTexture(Vector3.Transform(face[i + 3], RotY90) - Vector3.UnitX, -Vector3.UnitX, Texcoords);
+                vertexes[i + 12] = new VertexPositionNormalTexture(Vector3.Transform(face[i], RotY90) - Vector3.UnitX, Vector3.UnitX, Texcoords);
+                vertexes[i + 12 + 3] = new VertexPositionNormalTexture(Vector3.Transform(face[i + 3], RotY90) - Vector3.UnitX, Vector3.UnitX, Texcoords);
             }
             //Right face
             for (int i = 0; i <= 2; i++)
             {
-                vertexes[i + 18] = new VertexPositionNormalTexture(Vector3.Transform(face[2 - i], RotY90) - Vector3.UnitX, Vector3.UnitX, Texcoords);
-                vertexes[i + 18 + 3] = new VertexPositionNormalTexture(Vector3.Transform(face[5 - i], RotY90) - Vector3.UnitX, Vector3.UnitX, Texcoords);
+                vertexes[i + 18] = new VertexPositionNormalTexture(Vector3.Transform(face[2 - i], RotY90) + Vector3.UnitX, -Vector3.UnitX, Texcoords);
+                vertexes[i + 18 + 3] = new VertexPositionNormalTexture(Vector3.Transform(face[5 - i], RotY90) + Vector3.UnitX, -Vector3.UnitX, Texcoords);
             }
             //Top face
-            Matrix RotX90 = Matrix.CreateRotationX(-MathHelper.Pi / 2f);
+            
             for (int i = 0; i <= 2; i++)
             {
                 vertexes[i + 24] = new VertexPositionNormalTexture(Vector3.Transform(face[i], RotX90) + Vector3.UnitY, Vector3.UnitY, Texcoords);
@@ -62,7 +64,7 @@ namespace RubixSolver{
                 vertexes[i + 30 + 3] = new VertexPositionNormalTexture(Vector3.Transform(face[5 - i], RotX90) - Vector3.UnitY, -Vector3.UnitY, Texcoords);
             }
             
-            return vertexes;
+            vertexPositions = vertexes;
         }
     }
 }
