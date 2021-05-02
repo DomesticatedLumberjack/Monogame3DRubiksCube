@@ -82,10 +82,18 @@ namespace RubixSolver
             if(Keyboard.GetState().IsKeyDown(Keys.Space))
                 orbit = !orbit;
 
-            if(Keyboard.GetState().IsKeyDown(Keys.D0))
-                rubixCube.RotateFace(0);
             if(Keyboard.GetState().IsKeyDown(Keys.D1))
+                rubixCube.RotateFace(0);
+            if(Keyboard.GetState().IsKeyDown(Keys.D2))
                 rubixCube.RotateFace(1);
+            if(Keyboard.GetState().IsKeyDown(Keys.D3))
+                rubixCube.RotateFace(2);
+            if(Keyboard.GetState().IsKeyDown(Keys.D4))
+                rubixCube.RotateFace(3);
+            if(Keyboard.GetState().IsKeyDown(Keys.D5))
+                rubixCube.RotateFace(4);
+            if(Keyboard.GetState().IsKeyDown(Keys.D6))
+                rubixCube.RotateFace(5);
             
             if(orbit)
                 angleY += 0.005f;
@@ -110,7 +118,7 @@ namespace RubixSolver
                 pass.Apply();
                 foreach(Block b in rubixCube.blocks)
                 {
-                    graphics.GraphicsDevice.DrawUserPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, b.vertexPositions, 0, 12);
+                    graphics.GraphicsDevice.DrawUserPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, b.vertexes, 0, 12);
                 }
             }
 

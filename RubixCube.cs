@@ -49,39 +49,46 @@ namespace RubixSolver
             return returnBlocks;
         }
 
-        private Vector3 AveragePoint(VertexPositionNormalTexture[] vertexPositionNormalTextures)
-        {
-            Vector3 avgPoint = Vector3.Zero;
-            ReadOnlySpan<VertexPositionNormalTexture> span = vertexPositionNormalTextures.AsSpan();
-            foreach(VertexPositionNormalTexture v in span)
-            {
-                avgPoint += v.Position;
-            }
-            avgPoint /= vertexPositionNormalTextures.Length;
-
-            return avgPoint;
-        }
-
-        private Vector3 RotateAboutPoint(Vector3 pointOfRotation, Vector3 initPosition, float angle)
-        {
-            Vector3 finalPoint = Vector3.Zero;
-
-            finalPoint.X = (initPosition.X * MathF.Cos(angle)) - (initPosition.Y * MathF.Sin(angle));
-            finalPoint.Y = (initPosition.Y * MathF.Cos(angle)) + (initPosition.Y * MathF.Sin(angle));
-
-            return finalPoint;
-        }
-
         public void RotateFace(int face)
         {
             Block[,] blocks = GetFaceBlocks(face);
-            Vector3 rotationPoint = AveragePoint(blocks[1,1].vertexPositions);
+            Vector3 pointOfRotation = Vector3.Zero;
+
+            // Determine point of rotation for vertexes
+            foreach(VertexPositionNormalTexture v in blocks[1, 1].vertexes)
+            {
+                pointOfRotation += v.Position;
+            }
+            pointOfRotation /= blocks[1, 1].vertexes.Length;
+
+            char axis = ' ';
+
+            switch(face / 2)
+            {
+                case 0:
+                    axis = 'z';
+                    break;
+                case 1:
+                    axis = 'y';
+                    break;
+                case 2:
+                    axis = 'z';
+                    break;
+            }
+
+
             
             foreach(Block b in blocks)
             {
-                for(int i = 0; i < b.vertexPositions.Length; i++)
+                for(int i = 0; i < b.vertexes.Length; i++)
                 {
-                    b.vertexPositions[i].Position = RotateAboutPoint(rotationPoint, b.vertexPositions[i].Position, 0.01f);
+                    Vector3 orbitPos = b.vertexes[i].Position;
+                    float yaw = 0.01f, pitch = 0, roll = 0;
+                    float distance = Vector3.Distance(orbitPos, pointOfRotation);
+                    Vector3 orbitOffset = orbitPos - pointOfRotation;
+                    Matrix rotation = Matrix.CreateFromYawPitchRoll(yaw, pitch, roll);
+                    Vector3.Transform(ref orbitOffset, ref rotation, out orbitOffset);
+                    b.vertexes[i].Position = pointOfRotation + orbitOffset;
                 }
             }
         }

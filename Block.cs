@@ -4,13 +4,15 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace RubixSolver{
     public class Block{
-        public VertexPositionNormalTexture[] vertexPositions {get; set;}
-        Model model;
+        public VertexPositionNormalTexture[] vertexes {get; set;}
+        Matrix Rotation;
         public Block(Vector3 initPosition)
         {
-            VertexPositionNormalTexture[] vertexes = new VertexPositionNormalTexture[36];
+            vertexes = new VertexPositionNormalTexture[36];
             Vector2 Texcoords = new Vector2(0f, 0f);
             Vector3[] face = new Vector3[6];
+            Rotation = new Matrix();
+            
 
             //TopLeft
             face[0] = new Vector3(-1f, 1f, 0.0f);
@@ -73,23 +75,21 @@ namespace RubixSolver{
                     vertexes[i].Position += initPosition;
                 }
             }
-            
-            vertexPositions = vertexes;
         }
 
         public void MoveCubeDirectionVector(Vector3 moveVect)
         {
-            for(int i = 0; i < vertexPositions.Length; i++)
+            for(int i = 0; i < vertexes.Length; i++)
             {
-                vertexPositions[i].Position += moveVect;
+                vertexes[i].Position += moveVect;
             }
         }
 
         public void MoveCubeToVector(Vector3 moveVect)
         {
-            for(int i = 0; i < vertexPositions.Length; i++)
+            for(int i = 0; i < vertexes.Length; i++)
             {
-                vertexPositions[i].Position = moveVect;
+                vertexes[i].Position = moveVect;
             }
         }
     }
