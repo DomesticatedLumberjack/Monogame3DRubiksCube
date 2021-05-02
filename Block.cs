@@ -1,10 +1,12 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace RubixSolver{
-    class Cube{
+    public class Block{
         public VertexPositionNormalTexture[] vertexPositions {get; set;}
-        public Cube()
+        Model model;
+        public Block(Vector3 initPosition)
         {
             VertexPositionNormalTexture[] vertexes = new VertexPositionNormalTexture[36];
             Vector2 Texcoords = new Vector2(0f, 0f);
@@ -63,8 +65,32 @@ namespace RubixSolver{
                 vertexes[i + 30] = new VertexPositionNormalTexture(Vector3.Transform(face[2 - i], RotX90) - Vector3.UnitY, -Vector3.UnitY, Texcoords);
                 vertexes[i + 30 + 3] = new VertexPositionNormalTexture(Vector3.Transform(face[5 - i], RotX90) - Vector3.UnitY, -Vector3.UnitY, Texcoords);
             }
+
+            if(initPosition != Vector3.Zero)
+            {
+                for(int i = 0; i < vertexes.Length; i++)
+                {
+                    vertexes[i].Position += initPosition;
+                }
+            }
             
             vertexPositions = vertexes;
+        }
+
+        public void MoveCubeDirectionVector(Vector3 moveVect)
+        {
+            for(int i = 0; i < vertexPositions.Length; i++)
+            {
+                vertexPositions[i].Position += moveVect;
+            }
+        }
+
+        public void MoveCubeToVector(Vector3 moveVect)
+        {
+            for(int i = 0; i < vertexPositions.Length; i++)
+            {
+                vertexPositions[i].Position = moveVect;
+            }
         }
     }
 }

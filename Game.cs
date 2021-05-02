@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -8,8 +9,8 @@ namespace RubixSolver
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        Cube cube;
-
+        
+        
         //Camera
         //Renderer
         public struct Renderer{
@@ -20,7 +21,7 @@ namespace RubixSolver
         
         //Objects
         Renderer ren;
-
+        RubixCube rubixCube;
         float angleX;
         float angleY;
         bool orbit;
@@ -44,9 +45,9 @@ namespace RubixSolver
             ren.BasicEffect.LightingEnabled = true;
 
             //Setup Camera
-            Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.Pi / 4.0f, (float)this.Window.ClientBounds.Width / (float)this.Window.ClientBounds.Height, 1f, 10f);
+            Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.Pi / 4.0f, (float)this.Window.ClientBounds.Width / (float)this.Window.ClientBounds.Height, 1f, 100f);
             ren.BasicEffect.Projection = projection;
-            Matrix V = Matrix.CreateTranslation(0f,0f,-10f);
+            Matrix V = Matrix.CreateTranslation(0f,0f,-20f);
             ren.BasicEffect.View = V;
 
             ren.VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
@@ -56,8 +57,9 @@ namespace RubixSolver
             angleX = 0;
             angleY = 0;
 
-            cube = new Cube();
             orbit = false;
+
+            rubixCube = new RubixCube();
         }
         protected override void LoadContent()
         {
@@ -79,6 +81,11 @@ namespace RubixSolver
 
             if(Keyboard.GetState().IsKeyDown(Keys.Space))
                 orbit = !orbit;
+
+            if(Keyboard.GetState().IsKeyDown(Keys.D0))
+                rubixCube.RotateFace(0);
+            if(Keyboard.GetState().IsKeyDown(Keys.D1))
+                rubixCube.RotateFace(1);
             
             if(orbit)
                 angleY += 0.005f;
@@ -101,7 +108,10 @@ namespace RubixSolver
             foreach(EffectPass pass in ren.BasicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                graphics.GraphicsDevice.DrawUserPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, cube.vertexPositions, 0, 12);
+                foreach(Block b in rubixCube.blocks)
+                {
+                    graphics.GraphicsDevice.DrawUserPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, b.vertexPositions, 0, 12);
+                }
             }
 
             base.Draw(gameTime);
