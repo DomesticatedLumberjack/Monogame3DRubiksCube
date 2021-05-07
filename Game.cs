@@ -38,11 +38,6 @@ namespace RubixSolver
 
             //Setup Renderer
             ren.BasicEffect = new BasicEffect(GraphicsDevice);
-            ren.BasicEffect.AmbientLightColor = Vector3.One;
-            ren.BasicEffect.DirectionalLight0.Enabled = true;
-            ren.BasicEffect.DirectionalLight0.DiffuseColor = Vector3.One;
-            ren.BasicEffect.DirectionalLight0.Direction = Vector3.Normalize(Vector3.One);
-            ren.BasicEffect.LightingEnabled = true;
 
             //Setup Camera
             Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.Pi / 4.0f, (float)this.Window.ClientBounds.Width / (float)this.Window.ClientBounds.Height, 1f, 100f);
@@ -51,7 +46,8 @@ namespace RubixSolver
             ren.BasicEffect.View = V;
 
             ren.VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
-            ren.BasicEffect.AmbientLightColor = new Vector3(0.8f, 0.8f, 0.8f);
+            ren.BasicEffect.VertexColorEnabled = true;
+            ren.BasicEffect.LightingEnabled = false;
 
             //Orbit
             angleX = 0;
@@ -82,18 +78,7 @@ namespace RubixSolver
             if(Keyboard.GetState().IsKeyDown(Keys.Space))
                 orbit = !orbit;
 
-            if(Keyboard.GetState().IsKeyDown(Keys.D1))
-                rubixCube.RotateFace(0);
-            if(Keyboard.GetState().IsKeyDown(Keys.D2))
-                rubixCube.RotateFace(1);
-            if(Keyboard.GetState().IsKeyDown(Keys.D3))
-                rubixCube.RotateFace(2);
-            if(Keyboard.GetState().IsKeyDown(Keys.D4))
-                rubixCube.RotateFace(3);
-            if(Keyboard.GetState().IsKeyDown(Keys.D5))
-                rubixCube.RotateFace(4);
-            if(Keyboard.GetState().IsKeyDown(Keys.D6))
-                rubixCube.RotateFace(5);
+            rubixCube.Update();
             
             if(orbit)
                 angleY += 0.005f;
@@ -107,7 +92,7 @@ namespace RubixSolver
         }
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Gray);
 
             RasterizerState rasterizerState = new RasterizerState();
             rasterizerState.CullMode = CullMode.CullClockwiseFace;
@@ -118,7 +103,7 @@ namespace RubixSolver
                 pass.Apply();
                 foreach(Block b in rubixCube.blocks)
                 {
-                    graphics.GraphicsDevice.DrawUserPrimitives<VertexPositionNormalTexture>(PrimitiveType.TriangleList, b.vertexes, 0, 12);
+                    graphics.GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, b.vertexes, 0, 12);
                 }
             }
 
