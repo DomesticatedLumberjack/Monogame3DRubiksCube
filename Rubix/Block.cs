@@ -1,7 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace RubixSolver{
+namespace Monogame3DRubixCube.Rubix{
     enum FaceColor{
         Blank,
         White,
@@ -12,15 +12,15 @@ namespace RubixSolver{
         Green
     }
     public class Block{
+        public static int totalBlocks = 0;
         public VertexPositionColor[] vertexes {get; set;}
-        public Vector3 initCubePosition = Vector3.Zero;
-        public Block(Vector3 initPosition, Vector3 arrayPos)
+        public int id;
+        public Block(Vector3 initPosition)
         {
+            id = totalBlocks++;
             vertexes = new VertexPositionColor[36];
             Vector2 Texcoords = new Vector2(0f, 0f);
             Vector3[] face = new Vector3[6];
-            initCubePosition = arrayPos;
-
             //TopLeft
             face[0] = new Vector3(-1f, 1f, 0.0f);
             //BottomLeft

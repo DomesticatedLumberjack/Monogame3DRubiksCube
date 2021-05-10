@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace RubixSolver
+namespace Monogame3DRubixCube
 {
     public static class Program
     {

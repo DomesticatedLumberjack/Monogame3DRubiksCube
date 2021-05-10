@@ -1,8 +1,9 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Monogame3DRubixCube.Rubix;
 
-namespace RubixSolver
+namespace Monogame3DRubixCube
 {
     public class Game1 : Game
     {
@@ -20,7 +21,7 @@ namespace RubixSolver
         
         //Objects
         Renderer ren;
-        RubixCube rubixCube;
+        Cube rubixCube;
         float angleX;
         float angleY;
         bool orbit;
@@ -54,7 +55,7 @@ namespace RubixSolver
 
             orbit = false;
 
-            rubixCube = new RubixCube();
+            rubixCube = new Cube();
         }
         protected override void LoadContent()
         {
