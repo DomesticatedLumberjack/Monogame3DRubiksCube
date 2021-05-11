@@ -1,41 +1,43 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Monogame3DRubixCube.Rubix
+namespace Monogame3DRubiksCube.Rubiks
 {
     public class Face
     {
-        public Block[,] blocks{get; set;}
+        public bool rotating;
         private float rotationProgress;
         private int dim;
         private float rotateSpeed;
 
         public Face()
         {
+            rotating = false;
             rotationProgress = 0.0f;
             dim = 3;
-            rotateSpeed = 0.075f;
-            blocks = new Block[dim, dim];
+            rotateSpeed = -0.075f;
         }
 
-        public bool Rotate(int face, bool reverseRotation)
+        public Block[,] Rotate(Block[,] blocks, int face)
         {
+            Block[,] returnBlocks = null;
             bool completed = false;
             float frameRotation = 0.0f; //Rotation done in one frame
 
             //------------Determine rotation distance if less than rotation speed--------------
-            if(rotationProgress + rotateSpeed >= MathHelper.PiOver2)
+            if(rotationProgress - rotateSpeed <= -MathHelper.PiOver2)
             {
-                frameRotation = MathHelper.PiOver2 - rotationProgress;
+                frameRotation = -MathHelper.PiOver2 - rotationProgress;
                 rotationProgress = 0.0f;
                 completed = true;
+                returnBlocks = blocks;
             }
             else{
                 frameRotation = rotateSpeed;
                 rotationProgress += rotateSpeed;
             }
 
-            //--------------Rotate block placments in 3d array----------------------
+            //--------------Rotate block placments in 2d array----------------------
             if(completed){
                 for (int i=0; i <= (dim - 1)/2; i++) {
                     for (int j=i; j < dim - i - 1; j++) {
@@ -70,10 +72,10 @@ namespace Monogame3DRubixCube.Rubix
                     rotationAngle.Z = frameRotation;
                     break;
                 case 1 or 4:
-                    rotationAngle.Y = frameRotation;
+                    rotationAngle.X = -frameRotation;
                     break;
                 case 2 or 5:
-                    rotationAngle.X = frameRotation;
+                    rotationAngle.Y = frameRotation;
                     break;
             }
 
@@ -89,7 +91,7 @@ namespace Monogame3DRubixCube.Rubix
                     b.vertexes[i].Position = pointOfRotation + orbitOffset;
                 }
             }
-            return completed;
+            return returnBlocks;
         }
     }
 }

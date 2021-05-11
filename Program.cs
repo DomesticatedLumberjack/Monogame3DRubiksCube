@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Monogame3DRubixCube
+namespace Monogame3DRubiksCube
 {
     public static class Program
     {

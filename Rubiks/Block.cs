@@ -1,16 +1,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace Monogame3DRubixCube.Rubix{
-    enum FaceColor{
-        Blank,
-        White,
-        Yellow,
-        Red,
-        Orange,
-        Blue,
-        Green
-    }
+namespace Monogame3DRubiksCube.Rubiks{
     public class Block{
         public static int totalBlocks = 0;
         public VertexPositionColor[] vertexes {get; set;}

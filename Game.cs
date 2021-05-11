@@ -1,16 +1,15 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Monogame3DRubixCube.Rubix;
+using Monogame3DRubiksCube.Rubiks;
 
-namespace Monogame3DRubixCube
+namespace Monogame3DRubiksCube
 {
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-        
-        
+              
         //Camera
         //Renderer
         public struct Renderer{
