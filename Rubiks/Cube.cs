@@ -6,7 +6,7 @@ namespace Monogame3DRubiksCube.Rubiks
 {
     public class Cube
     {
-        private Block[,,] blocks {get; set;}
+        private Block[,,] blocks
         private Face[] faces;
         private int rotatingFace;
         private int dim;
