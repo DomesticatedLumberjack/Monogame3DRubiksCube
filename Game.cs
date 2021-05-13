@@ -12,14 +12,9 @@ namespace Monogame3DRubiksCube
               
         //Camera
         //Renderer
-        public struct Renderer{
-            public BasicEffect BasicEffect; //3D equivalent to spritebatch
-            public VertexPositionColor[] TriangleVertices;
-            public VertexBuffer VertexBuffer;
-        }
+        public BasicEffect BasicEffect; //3D equivalent to spritebatch
         
         //Objects
-        Renderer ren;
         Cube rubixCube;
         float angleX;
         float angleY;
@@ -33,20 +28,18 @@ namespace Monogame3DRubiksCube
         {
             base.Initialize();
             //Init objects
-            ren = new Renderer();
 
             //Setup Renderer
-            ren.BasicEffect = new BasicEffect(GraphicsDevice);
+            BasicEffect = new BasicEffect(GraphicsDevice);
 
             //Setup Camera
             Matrix projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.Pi / 4.0f, (float)this.Window.ClientBounds.Width / (float)this.Window.ClientBounds.Height, 1f, 100f);
-            ren.BasicEffect.Projection = projection;
+            BasicEffect.Projection = projection;
             Matrix V = Matrix.CreateTranslation(0f,0f,-20f);
-            ren.BasicEffect.View = V;
+            BasicEffect.View = V;
 
-            ren.VertexBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionColor), 3, BufferUsage.WriteOnly);
-            ren.BasicEffect.VertexColorEnabled = true;
-            ren.BasicEffect.LightingEnabled = false;
+            BasicEffect.VertexColorEnabled = true;
+            BasicEffect.LightingEnabled = false;
 
             //Orbit
             angleX = 0;
@@ -86,7 +79,7 @@ namespace Monogame3DRubiksCube
             if (angleX > 2 * MathHelper.Pi) angleX = 0;
             Matrix R = Matrix.CreateRotationY(angleY) * Matrix.CreateRotationX(0.4f + angleX);
             Matrix T = Matrix.CreateTranslation(0.0f, 0f, 5f);
-            ren.BasicEffect.World = R * T;
+            BasicEffect.World = R * T;
             base.Update(gameTime);
         }
         protected override void Draw(GameTime gameTime)
@@ -97,13 +90,10 @@ namespace Monogame3DRubiksCube
             rasterizerState.CullMode = CullMode.CullClockwiseFace;
             GraphicsDevice.RasterizerState = rasterizerState;
 
-            foreach(EffectPass pass in ren.BasicEffect.CurrentTechnique.Passes)
+            foreach(EffectPass pass in BasicEffect.CurrentTechnique.Passes)
             {
                 pass.Apply();
-                foreach(Block b in rubixCube.blocks)
-                {
-                    graphics.GraphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, b.vertexes, 0, 12);
-                }
+                rubixCube.Draw(GraphicsDevice);
             }
 
             base.Draw(gameTime);

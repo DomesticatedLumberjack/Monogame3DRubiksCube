@@ -1,24 +1,27 @@
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace Monogame3DRubiksCube.Rubiks
 {
     public class Face
     {
-        public bool rotating;
+        private static int totalFaces;
         private float rotationProgress;
         private int dim;
         private float rotateSpeed;
+        private Vector3 pointOfRotation;
+        private int faceNumber;
 
-        public Face()
+
+        public Face(int dim, Block pointOfRotationBlock)
         {
-            rotating = false;
             rotationProgress = 0.0f;
-            dim = 3;
+            this.dim = dim;
             rotateSpeed = -0.075f;
+            faceNumber = totalFaces++;
+            pointOfRotation = pointOfRotationBlock.GetBlockCenter();
         }
 
-        public Block[,] Rotate(Block[,] blocks, int face)
+        public Block[,] RotateFace(Block[,] blocks, int face)
         {
             Block[,] returnBlocks = null;
             bool completed = false;
@@ -54,16 +57,7 @@ namespace Monogame3DRubiksCube.Rubiks
                 }
             }
 
-            //------------------Rotate vertexes about rotation point------------------------
-
-            //Determine point of rotation for face
-            Vector3 pointOfRotation = Vector3.Zero;
-            foreach(VertexPositionColor v in blocks[1, 1].vertexes)
-            {
-                pointOfRotation += v.Position;
-            }
-            pointOfRotation /= blocks[1, 1].vertexes.Length;
-            
+            //------------------Rotate blocks about rotation point------------------------            
             //Determine axis of Rotation
             Vector3 rotationAngle = Vector3.Zero;
             switch(face)
@@ -79,17 +73,10 @@ namespace Monogame3DRubiksCube.Rubiks
                     break;
             }
 
-            //Rotate blocks vertexes in 3d space
+            //Rotate blocks in 3d space
             foreach(Block b in blocks)
             {
-                for(int i = 0; i < b.vertexes.Length; i++)
-                {
-                    float distance = Vector3.Distance(b.vertexes[i].Position, pointOfRotation);
-                    Vector3 orbitOffset = b.vertexes[i].Position - pointOfRotation;
-                    Matrix rotation = Matrix.CreateFromYawPitchRoll(rotationAngle.X, rotationAngle.Y, rotationAngle.Z);
-                    Vector3.Transform(ref orbitOffset, ref rotation, out orbitOffset);
-                    b.vertexes[i].Position = pointOfRotation + orbitOffset;
-                }
+                b.RotateAboutPoint(pointOfRotation, rotationAngle); 
             }
             return returnBlocks;
         }

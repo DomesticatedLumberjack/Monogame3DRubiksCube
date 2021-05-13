@@ -3,9 +3,9 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace Monogame3DRubiksCube.Rubiks{
     public class Block{
-        public static int totalBlocks = 0;
-        public VertexPositionColor[] vertexes {get; set;}
-        public int id;
+        private static int totalBlocks = 0;
+        private VertexPositionColor[] vertexes;
+        private int id;
         public Block(Vector3 initPosition)
         {
             id = totalBlocks++;
@@ -75,20 +75,40 @@ namespace Monogame3DRubiksCube.Rubiks{
             }
         }
 
-        public void MoveCubeDirectionVector(Vector3 moveVect)
+        public void SetCubePostition(Vector3 newPos)
         {
             for(int i = 0; i < vertexes.Length; i++)
             {
-                vertexes[i].Position += moveVect;
+                vertexes[i].Position = newPos;
             }
         }
 
-        public void MoveCubeToVector(Vector3 moveVect)
+        public Vector3 GetBlockCenter()
+        {
+            Vector3 centerPos = Vector3.Zero;
+            for(int i = 0; i < vertexes.Length; i++)
+            {
+                centerPos += vertexes[i].Position;
+            }
+            centerPos /= vertexes.Length;
+            return centerPos;
+        }
+
+        public void RotateAboutPoint(Vector3 pointOfRotation, Vector3 rotationAngle)
         {
             for(int i = 0; i < vertexes.Length; i++)
             {
-                vertexes[i].Position = moveVect;
+                float distance = Vector3.Distance(vertexes[i].Position, pointOfRotation);
+                Vector3 orbitOffset = vertexes[i].Position - pointOfRotation;
+                Matrix rotation = Matrix.CreateFromYawPitchRoll(rotationAngle.X, rotationAngle.Y, rotationAngle.Z);
+                Vector3.Transform(ref orbitOffset, ref rotation, out orbitOffset);
+                vertexes[i].Position = pointOfRotation + orbitOffset;
             }
+        }
+
+        public void Draw(GraphicsDevice graphicsDevice)
+        {
+            graphicsDevice.DrawUserPrimitives<VertexPositionColor>(PrimitiveType.TriangleList, vertexes, 0, 12);
         }
     }
 }

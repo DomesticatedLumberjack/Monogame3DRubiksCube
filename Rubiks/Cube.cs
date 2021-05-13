@@ -1,19 +1,20 @@
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace Monogame3DRubiksCube.Rubiks
 {
     public class Cube
     {
-        public Block[,,] blocks {get; set;}
-        private Face face;
-        int rotatingFace;
-        int dim;
+        private Block[,,] blocks {get; set;}
+        private Face[] faces;
+        private int rotatingFace;
+        private int dim;
         public Cube()
         {
             dim = 3;
             blocks = new Block[dim, dim, dim];
-            face = new Face();
+            faces = new Face[6];
             rotatingFace = -1;
 
             //Init all blocks
@@ -26,6 +27,12 @@ namespace Monogame3DRubiksCube.Rubiks
                         blocks[x, y, z] = new Block(new Vector3(x * 2, y * 2, z* 2));
                     }
                 }
+            }
+
+            //Init faces
+            for(int i = 0; i < faces.Length; i++)
+            {
+                faces[i] = new Face(dim, GetFace(i)[1,1]);
             }
         }
 
@@ -169,11 +176,19 @@ namespace Monogame3DRubiksCube.Rubiks
                     rotatingFace = 5;
             }
             else{
-                Block[,] returnedBlocks = face.Rotate(GetFace(rotatingFace), rotatingFace);
+                Block[,] returnedBlocks = faces[rotatingFace].RotateFace(GetFace(rotatingFace), rotatingFace);
                 if(returnedBlocks != null){ 
                     SetFace(returnedBlocks, rotatingFace);
                     rotatingFace = -1;
                 }
+            }
+        }
+
+        public void Draw(GraphicsDevice graphicsDevice)
+        {
+            foreach(Block b in blocks)
+            {
+                b.Draw(graphicsDevice);
             }
         }
     }
