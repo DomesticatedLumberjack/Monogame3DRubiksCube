@@ -176,6 +176,7 @@ namespace Monogame3DRubiksCube.Rubiks
                     rotatingFace = 5;
             }
             else{
+                //Only returns rotated face once done animating rotation
                 Block[,] returnedBlocks = faces[rotatingFace].RotateFace(GetFace(rotatingFace), rotatingFace);
                 if(returnedBlocks != null){ 
                     SetFace(returnedBlocks, rotatingFace);
